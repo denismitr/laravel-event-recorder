@@ -14,7 +14,7 @@ class RecordedEvent extends Model
     {
         $recordedEvent = new static();
         $recordedEvent->event_class = get_class($event);
-        $recordedEvent->event_properties = $event->getProperties();
+        $recordedEvent->event_properties = serialize($event->getProperties());
         $recordedEvent->event_description = $event->getDescription();
         $recordedEvent->save();
 

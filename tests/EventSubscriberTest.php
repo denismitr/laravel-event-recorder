@@ -1,0 +1,50 @@
+<?php
+
+namespace Denismitr\EventRecorder\Tests;
+
+
+use Denismitr\EventRecorder\Models\RecordedEvent;
+use Denismitr\EventRecorder\Tests\Stubs\Events\MoneyAddedToWallet;
+use Denismitr\EventRecorder\Tests\Stubs\Events\ShouldNotBeRecordedEvent;
+use Denismitr\EventRecorder\Tests\Stubs\Models\User;
+use Denismitr\EventRecorder\Tests\Stubs\Models\Wallet;
+
+class EventSubscriberTest extends TestCase
+{
+    /**
+     * @var Wallet
+     */
+    protected $wallet;
+
+    /**
+     * @var User
+     */
+    protected $user;
+
+    public function setUp()
+    {
+        parent::setUp();
+
+        $this->user = User::create(['name' => 'Denis', 'email' => 'denis@test.com']);
+        $this->wallet = Wallet::create(['amount' => 0, 'user_id' => $this->user->id]);
+    }
+
+    /** @test */
+    public function it_will_not_record_events_without_the_ShouldBeRecored_interface()
+    {
+        event(new ShouldNotBeRecordedEvent());
+        $this->assertCount(0, RecordedEvent::all());
+    }
+
+    /** @test */
+    public function it_will_report_events_that_implement_ShouldBeStored()
+    {
+        event(new MoneyAddedToWallet($this->wallet, 1234));
+
+        $this->assertCount(1, RecordedEvent::all());
+
+        $recordedEvent = RecordedEvent::first();
+
+        $this->assertEquals(MoneyAddedToWallet::class, $recordedEvent->event_class);
+    }
+}
