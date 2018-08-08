@@ -1,4 +1,5 @@
 ## Laravel Event Recorder
+[![Build Status](https://travis-ci.org/denismitr/laravel-event-recorder.svg?branch=master)](https://travis-ci.org/denismitr/laravel-event-recorder)
 
 ## Author
 Denis Mitrofanov<br>

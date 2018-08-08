@@ -28,12 +28,14 @@ class TestCase extends OrchestraTestCase
 
     protected function getEnvironmentSetup($app)
     {
-        $app['config']->set('database.default', 'sqlite');
-        $app['config']->set('database.connections.sqlite', [
-            'driver' => 'sqlite',
-            'database' => ':memory:',
-            'prefix' => '',
-        ]);
+        if (getenv('USE_MYSQL') !== 'yes') {
+            $app['config']->set('database.default', 'sqlite');
+            $app['config']->set('database.connections.sqlite', [
+                'driver' => 'sqlite',
+                'database' => ':memory:',
+                'prefix' => '',
+            ]);
+        }
     }
 
     protected function setUpDatabase($app)
