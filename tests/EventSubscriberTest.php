@@ -46,5 +46,14 @@ class EventSubscriberTest extends TestCase
         $recordedEvent = RecordedEvent::first();
 
         $this->assertEquals(MoneyAddedToWallet::class, $recordedEvent->event_class);
+        $this->assertEquals(1234, $recordedEvent->event_properties->get('amount'));
+        $this->assertEquals($this->wallet->id, $recordedEvent->event_properties->get('wallet_id'));
+        $this->assertEquals($this->user->id, $recordedEvent->event_properties->get('user_id'));
+        $this->assertEquals('credit', $recordedEvent->event_properties->get('operation'));
+
+        $this->assertDatabaseHas('recorded_events', [
+            'event_class' => 'Denismitr\EventRecorder\Tests\Stubs\Events\MoneyAddedToWallet',
+            'event_description' => "User with ID {$this->user->id} added 1234 to the wallet with ID {$this->wallet->id}"
+        ]);
     }
 }

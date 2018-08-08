@@ -40,6 +40,7 @@ class MoneyAddedToWallet implements ShouldBeRecorded
         return [
             'wallet_id' => $this->wallet->id,
             'amount' => $this->amount,
+            'user_id' => $this->wallet->user_id,
             'operation' => 'credit',
         ];
     }

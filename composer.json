@@ -18,6 +18,7 @@
   "minimum-stability": "dev",
   "require": {
     "php": "^7.1",
+    "denismitr/laravel-json-attributes": "dev-master",
     "illuminate/console": "^5.6",
     "illuminate/database": "^5.6",
     "illuminate/events": "^5.6",
