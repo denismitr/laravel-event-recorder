@@ -4,6 +4,9 @@
 ## Author
 Denis Mitrofanov<br>
 
+### Installation
+`composer require denismitr/laravel-event-recorder`
+
 ### Requirements
 PHP 7.1 or higher
 MYSQL 5.7 or higher
