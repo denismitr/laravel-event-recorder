@@ -10,6 +10,7 @@ class CreateRecordedEventsTable extends Migration
     {
         Schema::create('recorded_events', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->string('event_name', 100);
             $table->string('event_class');
             $table->string('event_description', 512)->nullable();
             $table->json('event_properties');

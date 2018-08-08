@@ -4,6 +4,7 @@ namespace Denismitr\EventRecorder\Tests;
 
 
 use Denismitr\EventRecorder\Models\RecordedEvent;
+use Denismitr\EventRecorder\Tests\Stubs\Events\EmptyEvent;
 use Denismitr\EventRecorder\Tests\Stubs\Events\MoneyAddedToWallet;
 use Denismitr\EventRecorder\Tests\Stubs\Events\ShouldNotBeRecordedEvent;
 use Denismitr\EventRecorder\Tests\Stubs\Models\User;
@@ -52,8 +53,22 @@ class EventSubscriberTest extends TestCase
         $this->assertEquals('credit', $recordedEvent->event_properties->get('operation'));
 
         $this->assertDatabaseHas('recorded_events', [
+            'event_name' => 'money_added_to_wallet',
             'event_class' => 'Denismitr\EventRecorder\Tests\Stubs\Events\MoneyAddedToWallet',
             'event_description' => "User with ID {$this->user->id} added 1234 to the wallet with ID {$this->wallet->id}"
         ]);
+    }
+    
+    /** @test */
+    public function it_can_handle_empty_array_and_null_description_implementation()
+    {
+        event(new EmptyEvent());
+
+        $this->assertCount(1, RecordedEvent::all());
+
+        $recordedEvent = RecordedEvent::first();
+
+        $this->assertEquals(EmptyEvent::class, $recordedEvent->event_class);
+        $this->assertEquals('empty_event', $recordedEvent->event_name);
     }
 }
