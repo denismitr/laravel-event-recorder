@@ -17,7 +17,7 @@ class EventSubscriber
      * @param string $eventClass
      * @param array $payload
      */
-    public function handleEvent(string $eventClass, array $payload): void
+    public function handleEvent(string $eventClass, array $payload)
     {
         if ( ! $this->shouldBeRecorded($eventClass) || ! isset($payload[0]) ) {
             return;
@@ -29,7 +29,7 @@ class EventSubscriber
     /**
      * @param ShouldBeRecorded $event
      */
-    public function recordEvent(ShouldBeRecorded $event): void
+    public function recordEvent(ShouldBeRecorded $event)
     {
         RecordedEvent::recordEvent($event);
     }
