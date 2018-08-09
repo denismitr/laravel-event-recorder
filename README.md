@@ -8,7 +8,7 @@ Denis Mitrofanov<br>
 `composer require denismitr/laravel-event-recorder`
 
 ### Requirements
-PHP 7.1 or higher
+PHP 7.0 or higher
 MYSQL 5.7 or higher
 or 
 POSTGRES probably any 9.* version or higher will do
@@ -17,9 +17,8 @@ POSTGRES probably any 9.* version or higher will do
 
 Any class that should be recorded to DB must implement the `Denismitr\EventRecorder\Contracts\ShouldBeRecorded` 
 interface. Which enforces the concrete implementation of two methods `getProperties(): array` 
-and `getDescription(): ?string` methods. Properties are an array of important **key-value** pairs for the event. 
-(see example below) and description is a human readable form of the event description. The later method can return null, 
-if for some reason the description is not required. The properties are stored in **json** format and description is a 
+and `getDescription(): string` methods. Properties are an array of important **key-value** pairs for the event. 
+(see example below) and description is a human readable form of the event description. The properties are stored in **json** format and description is a 
 **nullable** string field.
 
 ### Usage
@@ -60,7 +59,7 @@ class MoneyAddedToWallet implements ShouldBeRecorded
         ];
     }
 
-    public function getDescription(): ?string
+    public function getDescription(): string
     {
         return vsprintf("User with ID %s added %d to the wallet with ID %s", [
             $this->wallet->user_id,

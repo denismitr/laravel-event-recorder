@@ -16,19 +16,17 @@
     }
   ],
   "require": {
-    "php": ">=7.1",
-    "denismitr/laravel-json-attributes": "^0.3",
+    "php": ">=7.0",
+    "denismitr/laravel-json-attributes": "^0.4",
     "illuminate/console": "~5.5.0|~5.6.0",
     "illuminate/database": "~5.5.0|~5.6.0",
     "illuminate/events": "~5.5.0|~5.6.0",
-    "illuminate/support": "~5.5.0|~5.6.0",
-    "symfony/property-access": "^4.0",
-    "symfony/serializer": "^4.0"
+    "illuminate/support": "~5.5.0|~5.6.0"
   },
   "require-dev": {
-    "phpunit/phpunit": "^7.1",
+    "phpunit/phpunit": "^6.5",
     "mockery/mockery": "^1.1",
-    "orchestra/testbench": "^3.6"
+    "orchestra/testbench": "^3.5"
   },
   "autoload": {
     "psr-4": {

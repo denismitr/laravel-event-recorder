@@ -12,7 +12,7 @@ class CreateRecordedEventsTable extends Migration
             $table->bigIncrements('id');
             $table->string('event_name', 100);
             $table->string('event_class');
-            $table->string('event_description', 512)->nullable();
+            $table->string('event_description', 512);
             $table->json('event_properties');
             $table->timestamps();
         });

@@ -2,8 +2,8 @@
 /**
  * Created by PhpStorm.
  * User: denismitr
- * Date: 08.08.2018
- * Time: 19:25
+ * Date: 09.08.2018
+ * Time: 21:47
  */
 
 namespace Denismitr\EventRecorder\Tests\Stubs\Events;
@@ -11,7 +11,7 @@ namespace Denismitr\EventRecorder\Tests\Stubs\Events;
 
 use Denismitr\EventRecorder\Contracts\ShouldBeRecorded;
 
-class EmptyEvent implements ShouldBeRecorded
+class LongDescriptionEvent implements ShouldBeRecorded
 {
     public function getProperties(): array
     {
@@ -20,6 +20,7 @@ class EmptyEvent implements ShouldBeRecorded
 
     public function getDescription(): string
     {
-        return '';
+        return str_repeat('*', 1000);
     }
+
 }

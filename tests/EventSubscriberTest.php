@@ -5,10 +5,12 @@ namespace Denismitr\EventRecorder\Tests;
 
 use Denismitr\EventRecorder\Models\RecordedEvent;
 use Denismitr\EventRecorder\Tests\Stubs\Events\EmptyEvent;
+use Denismitr\EventRecorder\Tests\Stubs\Events\LongDescriptionEvent;
 use Denismitr\EventRecorder\Tests\Stubs\Events\MoneyAddedToWallet;
 use Denismitr\EventRecorder\Tests\Stubs\Events\ShouldNotBeRecordedEvent;
 use Denismitr\EventRecorder\Tests\Stubs\Models\User;
 use Denismitr\EventRecorder\Tests\Stubs\Models\Wallet;
+use Denismitr\JsonAttributes\JsonAttributes;
 
 class EventSubscriberTest extends TestCase
 {
@@ -70,5 +72,19 @@ class EventSubscriberTest extends TestCase
 
         $this->assertEquals(EmptyEvent::class, $recordedEvent->event_class);
         $this->assertEquals('empty_event', $recordedEvent->event_name);
+        $this->assertEquals('', $recordedEvent->event_description);
+        $this->assertInstanceOf(JsonAttributes::class, $recordedEvent->event_properties);
+        $this->assertEquals(0, $recordedEvent->event_properties->count());
+        $this->assertSame([], $recordedEvent->event_properties->all());
+    }
+
+    /** @test */
+    public function it_truncates_description_to_max_length_of_512()
+    {
+        event(new LongDescriptionEvent());
+
+        $recordedEvent = RecordedEvent::first();
+
+        $this->assertEquals(str_repeat('*', 512), $recordedEvent->event_description);
     }
 }

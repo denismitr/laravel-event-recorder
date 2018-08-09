@@ -13,11 +13,9 @@ interface ShouldBeRecorded
     public function getProperties(): array;
 
     /**
-     * This can be left unimplemented
-     *
      * Basically this allows to prepare a custom human readable description for an event
      *
      * @return string
      */
-    public function getDescription(): ?string;
+    public function getDescription(): string;
 }

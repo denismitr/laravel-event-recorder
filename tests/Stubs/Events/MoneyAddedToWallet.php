@@ -45,7 +45,7 @@ class MoneyAddedToWallet implements ShouldBeRecorded
         ];
     }
 
-    public function getDescription(): ?string
+    public function getDescription(): string
     {
         return vsprintf("User with ID %s added %d to the wallet with ID %s", [
             $this->wallet->user_id,

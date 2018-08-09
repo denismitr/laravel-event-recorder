@@ -41,7 +41,7 @@ class RecordedEvent extends Model
         $recordedEvent->event_name = EventName::capture($eventClass = get_class($event));
         $recordedEvent->event_class = $eventClass;
         $recordedEvent->event_properties = $event->getProperties();
-        $recordedEvent->event_description = $event->getDescription();
+        $recordedEvent->event_description = str_limit($event->getDescription(), 512, '');
         $recordedEvent->save();
 
         return $recordedEvent;
