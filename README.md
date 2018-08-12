@@ -4,9 +4,6 @@
 ## Author
 Denis Mitrofanov<br>
 
-### Installation
-`composer require denismitr/laravel-event-recorder`
-
 ### Requirements
 PHP 7.0 or higher
 MYSQL 5.7 or higher
@@ -21,8 +18,31 @@ and `getDescription(): string` methods. Properties are an array of important **k
 (see example below) and description is a human readable form of the event description. The properties are stored in **json** format and description is a 
 **nullable** string field.
 
-### Usage
+### Installation
+Via composer (current version is 1.x)
+`composer require denismitr/laravel-event-recorder`
 
+```
+'providers' => [
+    // ...
+    Denismitr\EventRecorder\EventRecorderServiceProvider::class,
+];
+```
+
+You can publish the migration with:
+```bash
+php artisan vendor:publish --provider="Denismitr\EventRecorder\EventRecorderServiceProvider" --tag="migrations"
+```
+
+You can publish the config file with:
+```bash
+php artisan vendor:publish --provider="Denismitr\EventRecorder\EventRecorderServiceProvider" --tag="config"
+```
+
+After the migration has been published and you are happy with configuration, run the mirations:
+`php artisan migrate`
+
+### Usage
 Let's imagine we have a `MoneyAddedToWallet` event:
 
 ```php
@@ -78,22 +98,50 @@ event(new MoneyAddedToWallet($this->wallet, 1234));
 
 $recordedEvent = RecordedEvent::first();
 
-$this->assertEquals(MoneyAddedToWallet::class, $recordedEvent->event_class);
-// json event_properties
-$this->assertEquals(1234, $recordedEvent->event_properties->get('amount'));
-$this->assertEquals($this->wallet->id, $recordedEvent->event_properties->get('wallet_id'));
-$this->assertEquals($this->user->id, $recordedEvent->event_properties->get('user_id'));
-$this->assertEquals('credit', $recordedEvent->event_properties->get('operation'));
+$this->assertEquals(MoneyAddedToWallet::class, $recordedEvent->class);
+// json properties
+$this->assertEquals(1234, $recordedEvent->properties->get('amount'));
+$this->assertEquals($this->wallet->id, $recordedEvent->properties->get('wallet_id'));
+$this->assertEquals($this->user->id, $recordedEvent->properties->get('user_id'));
+$this->assertEquals('credit', $recordedEvent->properties->get('operation'));
 
 $this->assertDatabaseHas('recorded_events', [
-    'event_name' => 'money_added_to_wallet',
-    'event_class' => 'Denismitr\EventRecorder\Tests\Stubs\Events\MoneyAddedToWallet',
-    'event_description' => "User with ID {$this->user->id} added 1234 to the wallet with ID {$this->wallet->id}"
+    'name' => 'money_added_to_wallet',
+    'class' => 'Denismitr\EventRecorder\Tests\Stubs\Events\MoneyAddedToWallet',
+    'description' => "User with ID {$this->user->id} added 1234 to the wallet with ID {$this->wallet->id}"
 ]);
 ```
 
 Two important things to notice: 
 * first - this package uses a dependency [denismitr/laravel-json-attributes](https://github.com/denismitr/laravel-json-attributes) 
 to handle json properties in an elegant way. See the [docs](https://github.com/denismitr/laravel-json-attributes) for more information.
-* second - there is a column **event_name** in `recorded_events` it is being generated from
+* second - there is a column **name** in `recorded_events` it is being generated from
 the full event class in the form of **snake cased class name** (without the namespace).
+
+### Triggered By
+As of version 1.0 package supports recording an ID of a user who triggered an event. 
+If you use a trait `Denismitr\EventRecorder\TriggeredByUser` in the event class you wish
+to record, when event occurres the user who is currently logged in ID will be saved along with 
+other data for this event. The DB column in `recorded_events` used for this is called `triggered_by_id`.
+There is a Laravel `belongsTo` relationship defined in `RecordedEvents` model. 
+This way you can retrieve an instance of a user whose actions have triggered the event.
+
+### Configuration
+The contents of configuration file is as follows:
+
+```php
+return [
+    'triggered_by_id_type' => 'unsignedInteger',
+
+    'triggered_by_class' => 'App\User',
+
+    'max_length' => [
+        'event_name' => 100,
+        'event_description' => 512,
+    ]
+];
+``` 
+
+If you need to change some of these properties, be sure to do that before you actually run 
+the `php artisan migrate`, otherwise you will have to do either `php artisan migrate:fresh`
+or if it is already impossible, you would have to manually create the logic for changing your DB schema.

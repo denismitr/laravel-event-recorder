@@ -8,7 +8,7 @@ class CreateRecordedEventsTable extends Migration
 {
     public function up()
     {
-        $triggeredByType = config('event-recorder.triggered_by_type');
+        $triggeredByType = config('event-recorder.triggered_by_id_type');
         $eventNameMaxLength = config('event-recorder.max_length.event_name');
         $eventDescriptionMaxLength = config('event-recorder.max_length.event_description');
 
