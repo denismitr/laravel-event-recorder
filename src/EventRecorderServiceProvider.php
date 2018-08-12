@@ -9,6 +9,10 @@ class EventRecorderServiceProvider extends ServiceProvider
 {
     public function boot()
     {
+        $this->publishes([
+            __DIR__.'/../config/event-recorder.php' => config_path('event-recorder.php'),
+        ], 'config');
+
         if ( ! class_exists('CreateRecordedEventsTable')) {
             $this->publishes([
                 __DIR__ . '/../database/migrations/create_recorded_events_table.php' =>
@@ -19,6 +23,11 @@ class EventRecorderServiceProvider extends ServiceProvider
 
     public function register()
     {
+        $this->mergeConfigFrom(
+            __DIR__.'/../config/event-recorder.php',
+            'event-recorder'
+        );
+
         Event::subscribe(EventSubscriber::class);
     }
 }

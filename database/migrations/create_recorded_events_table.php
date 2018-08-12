@@ -8,12 +8,21 @@ class CreateRecordedEventsTable extends Migration
 {
     public function up()
     {
-        Schema::create('recorded_events', function (Blueprint $table) {
+        $triggeredByType = config('event-recorder.triggered_by_id_type');
+        $eventNameMaxLength = config('event-recorder.max_length.event_name');
+        $eventDescriptionMaxLength = config('event-recorder.max_length.event_description');
+
+        Schema::create('recorded_events', function (Blueprint $table) use (
+            $triggeredByType,
+            $eventNameMaxLength,
+            $eventDescriptionMaxLength
+        ) {
             $table->bigIncrements('id');
-            $table->string('event_name', 100);
-            $table->string('event_class');
-            $table->string('event_description', 512);
-            $table->json('event_properties');
+            $table->{$triggeredByType}('triggered_by_id')->nullable();
+            $table->string('name', $eventNameMaxLength);
+            $table->string('class');
+            $table->string('description', $eventDescriptionMaxLength);
+            $table->json('properties');
             $table->timestamps();
         });
     }
