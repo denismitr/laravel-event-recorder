@@ -46,6 +46,9 @@
     "test-coverage": "vendor\\bin\\phpunit --coverage-html coverage"
   },
   "extra": {
+    "branch-alias": {
+        "dev-master": "1.0-dev"
+    },
     "laravel": {
       "providers": [
         "Denismitr\\EventRecorder\\EventRecorderServiceProvider"

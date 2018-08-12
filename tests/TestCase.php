@@ -3,12 +3,24 @@
 namespace Denismitr\EventRecorder\Tests;
 
 use Denismitr\EventRecorder\EventRecorderServiceProvider;
+use Denismitr\EventRecorder\Tests\Stubs\Models\User;
+use Denismitr\EventRecorder\Tests\Stubs\Models\Wallet;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use Orchestra\Testbench\TestCase as OrchestraTestCase;
 
 class TestCase extends OrchestraTestCase
 {
+    /**
+     * @var Wallet
+     */
+    protected $wallet;
+
+    /**
+     * @var User
+     */
+    protected $user;
+
     public function setUp()
     {
         parent::setUp();

@@ -13,22 +13,27 @@ class RecordedEvent extends Model
 {
     public $guarded = ['id'];
 
-    protected $casts = ['event_properties' => 'array'];
+    protected $casts = ['properties' => 'array'];
 
     /**
      * @return JsonAttributes
      */
-    public function getEventPropertiesAttribute(): JsonAttributes
+    public function getPropertiesAttribute(): JsonAttributes
     {
-        return JsonAttributes::create($this, 'event_properties');
+        return JsonAttributes::create($this, 'properties');
     }
 
     /**
      * @return Builder
      */
-    public function scopeWithEventProperties(): Builder
+    public function scopeWithProperties(): Builder
     {
-        return JsonAttributes::scopeWithJsonAttributes('event_properties');
+        return JsonAttributes::scopeWithJsonAttributes('properties');
+    }
+
+    public function triggeredBy()
+    {
+        return $this->belongsTo(config('event-recorder.triggered_by_class'), 'triggered_by_id');
     }
 
     /**
@@ -37,13 +42,25 @@ class RecordedEvent extends Model
      */
     public static function recordEvent(ShouldBeRecorded $event): self
     {
+        $eventDescriptionMaxLength = config('event-recorder.max_length.event_description');
+
         $recordedEvent = new static();
-        $recordedEvent->event_name = EventName::capture($eventClass = get_class($event));
-        $recordedEvent->event_class = $eventClass;
-        $recordedEvent->event_properties = $event->getProperties();
-        $recordedEvent->event_description = str_limit($event->getDescription(), 512, '');
+        $recordedEvent->name = EventName::capture($eventClass = get_class($event));
+        $recordedEvent->class = $eventClass;
+        $recordedEvent->triggered_by_id = static::resolveTriggeredBy($event);
+        $recordedEvent->properties = $event->getProperties();
+        $recordedEvent->description = str_limit($event->getDescription(), $eventDescriptionMaxLength, '');
         $recordedEvent->save();
 
         return $recordedEvent;
+    }
+
+    protected static function resolveTriggeredBy($event)
+    {
+        if (method_exists($event, 'getTriggeredById')) {
+            return $event->getTriggeredById();
+        }
+
+        return null;
     }
 }
