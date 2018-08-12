@@ -9,6 +9,7 @@ PHP 7.0 or higher
 MYSQL 5.7 or higher
 or 
 POSTGRES probably any 9.* version or higher will do
+Laravel >=5.5
 
 ### Overview
 
@@ -21,6 +22,9 @@ and `getDescription(): string` methods. Properties are an array of important **k
 ### Installation
 Via composer (current version is 1.x)
 `composer require denismitr/laravel-event-recorder`
+
+In Laravel 5.5 the service provider will automatically get registered. 
+But you can register it manually too in the `config/app.php` file:
 
 ```
 'providers' => [
