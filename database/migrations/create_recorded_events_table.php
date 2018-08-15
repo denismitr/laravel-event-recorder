@@ -23,6 +23,7 @@ class CreateRecordedEventsTable extends Migration
             $table->string('class');
             $table->string('description', $eventDescriptionMaxLength);
             $table->json('properties');
+            $table->json('triggered_by_properties')->nullable();
             $table->timestamps();
         });
     }

@@ -21,6 +21,11 @@ class TestCase extends OrchestraTestCase
      */
     protected $user;
 
+    /**
+     * @var User
+     */
+    protected $userNotToRecord;
+
     public function setUp()
     {
         parent::setUp();

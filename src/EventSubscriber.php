@@ -27,10 +27,20 @@ class EventSubscriber
     }
 
     /**
+     * Record incoming event
+     * unless it is specified individaully that it should be skipped
+     *
      * @param ShouldBeRecorded $event
      */
     public function recordEvent(ShouldBeRecorded $event)
     {
+        if (
+            method_exists($event, 'shouldBeSkipped') &&
+            $event->shouldBeSkipped()
+        ) {
+            return;
+        }
+
         RecordedEvent::recordEvent($event);
     }
 
