@@ -18,11 +18,12 @@ class CreateRecordedEventsTable extends Migration
             $eventDescriptionMaxLength
         ) {
             $table->bigIncrements('id');
-            $table->{$triggeredByType}('triggered_by_id')->nullable();
+            $table->{$triggeredByType}('triggered_by_id')->nullable()->index();
             $table->string('name', $eventNameMaxLength);
             $table->string('class');
             $table->string('description', $eventDescriptionMaxLength);
             $table->json('properties');
+            $table->json('triggered_by_properties')->nullable();
             $table->timestamps();
         });
     }
