@@ -10,6 +10,7 @@ use Denismitr\EventRecorder\Tests\Stubs\Events\LongDescriptionEvent;
 use Denismitr\EventRecorder\Tests\Stubs\Events\MoneyAddedToWallet;
 use Denismitr\EventRecorder\Tests\Stubs\Events\ShouldNotBeRecordedEvent;
 use Denismitr\EventRecorder\Tests\Stubs\Events\UserTriggeredEvent;
+use Denismitr\EventRecorder\Tests\Stubs\Models\UnpersistableUser;
 use Denismitr\EventRecorder\Tests\Stubs\Models\User;
 use Denismitr\EventRecorder\Tests\Stubs\Models\Wallet;
 use Denismitr\JsonAttributes\JsonAttributes;
@@ -27,6 +28,7 @@ class EventSubscriberTest extends TestCase
             'secret' => 5,
         ]);
         $this->userNotToRecord = User::create(['name' => 'Admin', 'email' => 'secret@test.com']);
+        $this->unpersistableUser = UnpersistableUser::create(['name' => 'Admin', 'email' => 'secret@test.com']);
         $this->wallet = Wallet::create(['amount' => 0, 'user_id' => $this->user->id]);
     }
 
@@ -154,5 +156,21 @@ class EventSubscriberTest extends TestCase
             'class' => 'Denismitr\EventRecorder\Tests\Stubs\Events\UserTriggeredEvent',
             'description' => "User with ID {$this->user->id} subtracted amount of $1234 from the wallet with ID {$this->wallet->id}"
         ]);
+    }
+
+    /** @test */
+    public function it_will_not_persist_the_attributes_of_a_user_who_does_not_use_CanTriggerEvents()
+    {
+        config()->set('event-recorder.triggered_by_class', UnpersistableUser::class);
+
+        $this->be($this->unpersistableUser);
+
+        event(new UserTriggeredEvent($this->wallet, 1234));
+
+        $recordedEvent = RecordedEvent::first();
+
+        $this->assertEmpty($recordedEvent->triggered_by_properties->all());
+        $this->assertNotEmpty($recordedEvent->properties->all());
+        $this->assertEquals($this->unpersistableUser->id, $recordedEvent->triggered_by_id);
     }
 }
