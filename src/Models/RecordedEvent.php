@@ -36,7 +36,7 @@ class RecordedEvent extends Model
      */
     public function getTriggeredByPropertiesAttribute(): JsonAttributes
     {
-        return JsonAttributes::create($this, 'properties');
+        return JsonAttributes::create($this, 'triggered_by_properties');
     }
 
     /**
@@ -44,7 +44,7 @@ class RecordedEvent extends Model
      */
     public function scopeWithTriggeredByProperties(): Builder
     {
-        return JsonAttributes::scopeWithJsonAttributes('properties');
+        return JsonAttributes::scopeWithJsonAttributes('triggered_by_properties');
     }
 
     public function triggeredBy()

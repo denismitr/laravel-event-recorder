@@ -20,7 +20,12 @@ class EventSubscriberTest extends TestCase
     {
         parent::setUp();
 
-        $this->user = User::create(['name' => 'Denis', 'email' => 'denis@test.com']);
+        $this->user = User::create([
+            'name' => 'Denis',
+            'email' => 'denis@test.com',
+            'password' => 'secret',
+            'secret' => 5,
+        ]);
         $this->userNotToRecord = User::create(['name' => 'Admin', 'email' => 'secret@test.com']);
         $this->wallet = Wallet::create(['amount' => 0, 'user_id' => $this->user->id]);
     }
@@ -121,7 +126,7 @@ class EventSubscriberTest extends TestCase
     }
 
     /** @test */
-    public function it_stores_triggered_by_id_when_event_uses_triggered_by_user_trait()
+    public function it_stores_triggered_by_data_when_event_uses_triggered_by_user_trait()
     {
         $this->be($this->user);
 
@@ -134,7 +139,14 @@ class EventSubscriberTest extends TestCase
         $this->assertEquals($this->wallet->id, $recordedEvent->properties->get('wallet_id'));
         $this->assertEquals($this->user->id, $recordedEvent->properties->get('user_id'));
         $this->assertEquals('debit', $recordedEvent->properties->get('operation'));
+        // User information should be stored
         $this->assertEquals($this->user->id, $recordedEvent->triggered_by_id);
+        $this->assertEquals($this->user->id, $recordedEvent->triggered_by_properties->get('id'));
+        $this->assertEquals($this->user->name, $recordedEvent->triggered_by_properties->get('name'));
+        $this->assertEquals($this->user->email, $recordedEvent->triggered_by_properties->get('email'));
+        // attibutes specified as hidden or
+        $this->assertNull($recordedEvent->triggered_by_properties->get('password'));
+        $this->assertNull($recordedEvent->triggered_by_properties->get('secret'));
 
         $this->assertDatabaseHas('recorded_events', [
             'name' => 'user_triggered_event',

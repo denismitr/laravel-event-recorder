@@ -61,6 +61,8 @@ class TestCase extends OrchestraTestCase
             $table->increments('id');
             $table->string('name');
             $table->string('email');
+            $table->string('password')->default('secret');
+            $table->tinyInteger('secret')->default(1);
             $table->boolean('admin')->default(false);
             $table->timestamps();
         });

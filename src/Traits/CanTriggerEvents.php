@@ -19,7 +19,7 @@ trait CanTriggerEvents
 
     public function getTriggeredByProperties(): array
     {
-        if (property_exists($this, 'triggeredByProperties')) {
+        if (property_exists($this, 'triggeredByProperties') && is_array($this->triggeredByProperties)) {
             return $this->triggeredByProperties;
         }
 

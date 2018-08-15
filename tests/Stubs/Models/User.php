@@ -13,6 +13,12 @@ class User extends Model implements Authenticatable
 
     protected $guarded = [''];
 
+    // should not be stored in triggered_by_properties
+    protected $hidden = ['password'];
+
+    // should not be stored in triggered_by_properties
+    protected $eventAttributeBlacklist = ['secret'];
+
     public function isAdmin(): bool
     {
         return !! $this->admin;
