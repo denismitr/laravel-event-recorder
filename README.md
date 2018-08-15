@@ -25,7 +25,7 @@ array of important **key-value** pairs for the given event that you wish to log/
 The properties are stored in **json** format and description is a **VARCHAR** 512 (configurable) string field.
 
 ### Installation
-Via composer (current version is 1.x)
+Via composer
 `composer require denismitr/laravel-event-recorder`
 
 In Laravel 5.5 the service provider will automatically get registered. 
