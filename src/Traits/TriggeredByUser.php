@@ -12,12 +12,14 @@ trait TriggeredByUser
 
     public function getTriggeredBy()
     {
-        if ( ! auth()->check()) {
-            return null;
+        if (auth()->check()) {
+            $user = auth()->user();
+
+            if (method_exists($user, 'getTriggeredByProperties')) {
+                return $user->getTriggeredByProperties();
+            }
         }
 
-        $user = auth()->user();
-
-        return $user->toArray();
+        return null;
     }
 }
